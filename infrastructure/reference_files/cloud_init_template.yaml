@@ -1,0 +1,38 @@
+#cloud-config
+
+groups:
+  - ubuntu: [root,sys]
+  - testgroup
+
+users:
+  - default
+  - name: ray
+    gecos: Ra.y
+    shell: /bin/bash
+    primary_group: testgroup
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    lock_passwd: false
+    ssh_authorized_keys:
+      # Place the public key generated from the pem file here.
+      - PUBLIC_KEY
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - nginx
+  - git
+  - python3-pip
+  - vim
+  - net-tools
+  - certbot
+  - uvicorn
+  - lsof
+
+runcmd:
+    # In Ubuntu 22.04, after a package is installed, it is asking for an interactive confirmation.
+    # This is a workaround to avoid the interactive confirmation. 
+  - sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+  - nginx -s reload
+  - sudo systemctl restart nginx
