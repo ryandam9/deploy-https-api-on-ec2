@@ -44,6 +44,9 @@ github_repo="$3"
 # This user is created by Terraform (Refer bootstrap.yaml)
 remote_host_user="ray"
 
+mkdir -p "./keys"
+mkdir -p "./working_dir"
+
 # ----------------------------------------------------------------------------#
 # Create a SSH Key locally                                                    #
 # ----------------------------------------------------------------------------#
