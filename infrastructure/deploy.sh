@@ -26,12 +26,14 @@
 # Check if all the arguments are passed
 if [ $# -ne 3 ]; then
     echo "Usage: $0 <domain_name> <email> <github_repo>"
+    echo "sh deploy.sh example.com email@example.com https://github.com/ryandam9/test-web-app"
     exit 1
 fi
 
 # Check if any of the arguments are empty
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
     echo "Usage: $0 <domain_name> <email> <github_repo>"
+    echo "sh deploy.sh example.com email@example.com https://github.com/ryandam9/test-web-app"
     exit 1
 fi
 
@@ -47,12 +49,17 @@ remote_host_user="ray"
 # ----------------------------------------------------------------------------#
 key_file="./keys/id_rsa"
 
-if [ -z "$(ls -A ./keys)" ]; then
+# If the key file doesn't exist, create one
+# otherwise, use the existing key
+if [ ! -f ./keys/id_rsa ] && [ ! -f ./keys/id_rsa.pub ]; then
     # -q - quiet mode
     # -t - Type of key to be created
     # -N - Passphrase to be used to encrypt the key
     # -f - Filename of the key file
+    echo "Private key doesn't exist. Creating one..."
     ssh-keygen -q -t rsa -N "" -f "${key_file}"
+else
+    echo "Private key already exists in ./keys directory. Using the existing key..."
 fi
 
 public_key=$(cat ./keys/id_rsa.pub)
